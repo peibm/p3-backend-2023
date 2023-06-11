@@ -1,0 +1,43 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Dataset {
+  id          Int                     @id @default(autoincrement())
+  name        String
+  owner       String                  @unique
+  createdAt   DateTime                @default(now())
+  permissions DatasetUserPermission[]
+  key         Key[]
+}
+
+model User {
+  email       String                  @id
+  name        String
+  surname     String
+  group       String
+  admin       Boolean                 @default(false)
+  permissions DatasetUserPermission[]
+}
+
+model Key {
+  id        Int      @default(autoincrement())
+  dataset   Dataset @relation(fields: [datasetId], references: [id])
+  datasetId Int
+  value     String
+  @@id([id, datasetId])
+}
+
+model DatasetUserPermission {
+  dataset   Dataset @relation(fields: [datasetId], references: [id])
+  datasetId Int
+  user      User    @relation(fields: [userId], references: [email])
+  userId    String
+
+  @@id([datasetId, userId])
+}

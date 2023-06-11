@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  encrypdb:
+    image: postgres
+    container_name: encrypdb
+    restart: always
+    environment:
+      - POSTGRES_USER=encrypdb
+      - POSTGRES_PASSWORD=fullstack123
+      - POSTGRES_DB=encrypdb
+    ports:
+      - 5432:5432
+    volumes:
+      - dbdata:/var/lib/postgresql/data/
+
+volumes:
+  dbdata:
