@@ -26,11 +26,10 @@ model User {
 }
 
 model Key {
-  id        Int      @default(autoincrement())
+  id        Int    @id  @default(autoincrement())
   dataset   Dataset @relation(fields: [datasetId], references: [id])
   datasetId Int
   value     String
-  @@id([id, datasetId])
 }
 
 model DatasetUserPermission {
