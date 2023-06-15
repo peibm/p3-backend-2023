@@ -39,7 +39,6 @@ router.get(
 router.put(
   "/:email",
   errorChecked(async (req, res) => {
-    console.log(req.body);
     const updatedUser = await prisma.user.update({
       where: { email: req.params.email },
       data: req.body,
