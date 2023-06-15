@@ -9,8 +9,8 @@ generator client {
 
 model Dataset {
   id          Int                     @id @default(autoincrement())
-  name        String
-  owner       String                  @unique
+  name        String                  @unique
+  owner       String                  
   createdAt   DateTime                @default(now())
   permissions DatasetUserPermission[]
   key         Key[]
