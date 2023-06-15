@@ -4,8 +4,6 @@ import { errorChecked } from "./utils.js";
 
 const router = Router();
 
-// ---------- Dataset Routes ----------
-
 router.get(
   "/",
   errorChecked(async (req, res) => {
@@ -15,10 +13,26 @@ router.get(
 );
 
 router.post(
-  "/",
+  "/datasets",
   errorChecked(async (req, res) => {
     const newDataset = await prisma.dataset.create({ data: req.body });
-    res.status(201).json({ newDataset, ok: true });
+
+    // Find all admin users
+    const adminUsers = await prisma.user.findMany({ where: { admin: true } });
+
+    // For each admin user, create a DatasetUserPermission
+    const permissions = await Promise.all(
+      adminUsers.map((user) => {
+        return prisma.datasetUserPermission.create({
+          data: {
+            datasetId: newDataset.id,
+            userId: user.email,
+          },
+        });
+      })
+    );
+
+    res.status(201).json({ newDataset, permissions, ok: true });
   })
 );
 
@@ -56,7 +70,9 @@ router.delete(
 router.get(
   "/:name",
   errorChecked(async (req, res) => {
-    const dataset = await prisma.dataset.findUniqueOrThrow({where: {name: req.params.name}})
+    const dataset = await prisma.dataset.findUniqueOrThrow({
+      where: { name: req.params.name },
+    });
     if (dataset) {
       res.status(200).json(dataset);
     } else {
