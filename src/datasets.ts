@@ -13,10 +13,9 @@ router.get(
 );
 
 router.post(
-  "/datasets",
+  "/",
   errorChecked(async (req, res) => {
     const newDataset = await prisma.dataset.create({ data: req.body });
-
     // Find all admin users
     const adminUsers = await prisma.user.findMany({ where: { admin: true } });
 
@@ -32,7 +31,7 @@ router.post(
       })
     );
 
-    res.status(201).json({ newDataset, permissions, ok: true });
+    res.status(201).json({ newDataset, ok: true });
   })
 );
 
